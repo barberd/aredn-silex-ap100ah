@@ -1,0 +1,5 @@
+--- a/nrc-build-config.h
++++ b/nrc-build-config.h
+@@ -57 +57 @@
+-#define CONFIG_S1G_CHANNEL
++/* #define CONFIG_S1G_CHANNEL */

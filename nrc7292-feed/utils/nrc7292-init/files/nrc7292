@@ -1,0 +1,59 @@
+#!/bin/sh /etc/rc.common
+# NRC7292 802.11ah (HaLow) WiFi initialization
+# Copyright (C) 2026
+
+START=50
+STOP=20
+
+NRC_RESET_GPIO=28
+NRC_IRQ_GPIO=1
+NRC_SPI_SPEED=16000000
+NRC_FW_NAME=nrc7292_cspi.bin
+NRC_BD_NAME=nrc7292_bd.dat
+
+start() {
+	echo "Starting NRC7292..."
+
+	# Export and configure reset GPIO
+	echo "$NRC_RESET_GPIO" > /sys/class/gpio/export 2>/dev/null
+	echo out > /sys/class/gpio/gpio${NRC_RESET_GPIO}/direction
+
+	# Reset the NRC7292 chip
+	echo 0 > /sys/class/gpio/gpio${NRC_RESET_GPIO}/value
+	sleep 1
+	echo 1 > /sys/class/gpio/gpio${NRC_RESET_GPIO}/value
+	sleep 1
+
+	# Load wireless dependencies first
+	modprobe cfg80211 2>/dev/null
+	modprobe mac80211 2>/dev/null
+
+	# Set regulatory domain BEFORE loading NRC
+	iw reg set US 2>/dev/null
+
+	# Load the NRC7292 driver
+	insmod /lib/modules/$(uname -r)/nrc.ko \
+		fw_name="$NRC_FW_NAME" \
+		bd_name="$NRC_BD_NAME" \
+		spi_gpio_irq="$NRC_IRQ_GPIO" \
+		hifspeed="$NRC_SPI_SPEED"
+
+	# Wait for phy to register (not wlan0 - that's created later by wifi-scripts)
+	local count=0
+	while [ $count -lt 50 ]; do
+		[ -d /sys/class/ieee80211/phy0 ] && break
+		count=$((count + 1))
+		sleep 0.1 2>/dev/null || sleep 1
+	done
+
+	if [ -d /sys/class/ieee80211/phy0 ]; then
+		echo "NRC7292: phy nrc80211 ready"
+	else
+		echo "NRC7292: WARNING - phy not found, continuing anyway"
+	fi
+}
+
+stop() {
+	echo "Stopping NRC7292..."
+	rmmod nrc 2>/dev/null
+}

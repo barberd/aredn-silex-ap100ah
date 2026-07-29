@@ -1,0 +1,5 @@
+--- a/nrc-init.c
++++ b/nrc-init.c
+@@ -772 +772 @@
+-	hw = nrc_mac_alloc_hw(sizeof(struct nrc), NRC_DRIVER_NAME);
++	hw = nrc_mac_alloc_hw(sizeof(struct nrc), NULL);

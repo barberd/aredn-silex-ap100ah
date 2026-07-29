@@ -1,0 +1,23 @@
+. /lib/functions/uci-defaults.sh
+
+board=$(board_name)
+
+board_config_update
+
+case "$board" in
+silex,ap-100ah)
+	ucidef_set_interfaces_lan_wan "eth0" "eth0.1"
+	ucidef_set_interface "dtdlink" device "eth0.2" protocol "static"
+	ucidef_set_interface "wifi" device "wlan0" protocol "static"
+	;;
+technexion,imx7d-pico-pi)
+	ucidef_set_interface_lan "eth0"
+	;;
+*)
+	ucidef_set_interfaces_lan_wan "eth0" "eth1"
+	;;
+esac
+
+board_config_flush
+
+exit 0

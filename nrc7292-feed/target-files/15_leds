@@ -1,0 +1,25 @@
+#!/bin/sh
+
+board=$(board_name)
+
+case "$board" in
+silex,ap-100ah)
+	uci set system.led_lan=led
+	uci set system.led_lan.name='LAN'
+	uci set system.led_lan.sysfs='green:lan'
+	uci set system.led_lan.trigger='netdev'
+	uci set system.led_lan.dev='eth0'
+	uci set system.led_lan.mode='link tx rx'
+
+	uci set system.led_wifi=led
+	uci set system.led_wifi.name='WiFi'
+	uci set system.led_wifi.sysfs='yellow:wifi'
+	uci set system.led_wifi.trigger='netdev'
+	uci set system.led_wifi.dev='wlan0'
+	uci set system.led_wifi.mode='link tx rx'
+
+	uci commit system
+	;;
+esac
+
+exit 0
