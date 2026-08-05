@@ -56,9 +56,16 @@ cp "$TOP_DIR/nrc7292-feed/target-files/platform.sh" "$OPENWRT/target/linux/imx/c
 echo "  -> target/linux/imx/cortexa7/base-files/lib/upgrade/platform.sh"
 
 # 6. motd with channel mapping table
-echo "[6/6] Installing motd..."
+echo "[6/7] Installing motd..."
 mkdir -p "$OPENWRT/files/etc"
 cp "$TOP_DIR/nrc7292-feed/target-files/motd" "$OPENWRT/files/etc/motd" 2>/dev/null || echo "  -> No motd file, skipping"
+
+# 7. LED configuration (uci-defaults, runs on first boot)
+echo "[7/7] Installing LED config..."
+mkdir -p "$OPENWRT/target/linux/imx/cortexa7/base-files/etc/uci-defaults"
+cp "$TOP_DIR/nrc7292-feed/target-files/15_leds" "$OPENWRT/target/linux/imx/cortexa7/base-files/etc/uci-defaults/15_leds"
+chmod +x "$OPENWRT/target/linux/imx/cortexa7/base-files/etc/uci-defaults/15_leds"
+echo "  -> target/linux/imx/cortexa7/base-files/etc/uci-defaults/15_leds"
 
 echo ""
 echo "=== AP-100AH setup complete ==="
