@@ -1,0 +1,17 @@
+{
+    "silex ap-100ah": {
+        "name": "Silex AP-100AH (NRC7292 HaLow)",
+        "wlan0": {
+            "band": "halow",
+            "bandwidths": [ 1, 2, 4 ],
+            "exclude_modes": [ "wan" ],
+            "maxpower": 23,
+            "antenna": "external"
+        },
+        "features": [ "xlink" ],
+        "timeouts": {
+            "reboot": [ 60, 300 ],
+            "upgrade": [ 240, 720 ]
+        }
+    }
+}

@@ -148,6 +148,9 @@ All Morse-specific operations gated on actual Morse hardware presence, not just 
 
 ### radios.json — Device Entry
 
+Installed during the build by `scripts/setup-ap100ah.sh` (step 8), which merges
+`nrc7292-feed/target-files/radios-entry.json` into AREDN's `files/etc/radios.json`:
+
 ```json
 "silex ap-100ah": {
     "name": "Silex AP-100AH (NRC7292 HaLow)",
@@ -156,7 +159,7 @@ All Morse-specific operations gated on actual Morse hardware presence, not just 
         "bandwidths": [1, 2, 4],
         "exclude_modes": ["wan"],
         "maxpower": 23,
-        "antenna": { "model": "Internal", "gain": 3, "beamwidth": 360 }
+        "antenna": "external"
     },
     "features": ["xlink"],
     "timeouts": { "reboot": [60, 300], "upgrade": [240, 720] }
@@ -165,7 +168,8 @@ All Morse-specific operations gated on actual Morse hardware presence, not just 
 
 - `band: "halow"` — enables halow UI behavior (channel in SSID, polarization, bandwidth selector)
 - `bandwidths: [1, 2, 4]` — S1G HaLow bandwidths (not standard WiFi 5/10/20)
-- No `bcf` field — this is how wireless_monitor distinguishes from Morse Micro
+- `antenna: "external"` — the AP-100AH/BR-100AH has an external HaLow antenna connector, so the web UI presents the selectable HaLow antenna list from `antennas.json` (None, HL-1, the various omnis, Generic-Omni, etc.). An earlier revision used a fixed built-in antenna object (`{ "model": "Internal", "gain": 3, "beamwidth": 360 }`), which incorrectly hid the antenna picker and showed a single non-selectable entry.
+- No `bcf` field — this is how wireless_monitor distinguishes from Morse Micro (and the NRC7292 driver doesn't use a Morse board-config file)
 
 ### radios.uc — Channel Availability Table
 
